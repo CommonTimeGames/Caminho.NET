@@ -1,12 +1,26 @@
 ﻿using System;
+using Caminho;
 
-namespace Caminho.NET.Console
+namespace Caminho
 {
     class MainClass
     {
         public static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
+            var engine = new CaminhoEngine();
+            engine.Start("sample");
+
+
+            Console.WriteLine(engine.Current.Text);
+            Console.WriteLine("Press ENTER to continue...");
+            Console.ReadLine();
+
+            engine.Continue();
+
+            Console.WriteLine(engine.Current.Text);
+            Console.WriteLine("Press ENTER to continue...");
+            Console.ReadLine();
         }
     }
 }
