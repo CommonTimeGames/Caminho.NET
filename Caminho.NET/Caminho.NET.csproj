@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <RootNamespace>Caminho</RootNamespace>
+    <PackOnBuild>true</PackOnBuild>
+    <PackageId>Caminho</PackageId>
+    <PackageVersion>0.1</PackageVersion>
+    <Authors>Nigel Brady</Authors>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <Owners>Nigel Brady</Owners>
+    <Summary>A flexible, cross-platform dialogue engine for .NET/Unity.</Summary>
+    <PackageTags>games, dialogue, script, lua</PackageTags>
+    <Title>Caminho.NET</Title>
+    <Description>A flexible, cross-platform dialogue engine for .NET/Unity.</Description>
+    <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MoonSharp" Version="2.0.0" />
+    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Engine\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Engine\caminho.lua" />
+    <None Remove="Engine\dialogue.lua" />
+    <None Remove="Engine\queue.lua" />
+    <None Remove="Engine\romance.lua" />
+    <None Remove="Engine\run.lua" />
+    <None Remove="Engine\sample.lua" />
+    <None Remove="Engine\util.lua" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Engine\caminho.lua" />
+    <EmbeddedResource Include="Engine\dialogue.lua" />
+    <EmbeddedResource Include="Engine\queue.lua" />
+    <EmbeddedResource Include="Engine\romance.lua" />
+    <EmbeddedResource Include="Engine\run.lua" />
+    <EmbeddedResource Include="Engine\sample.lua" />
+    <EmbeddedResource Include="Engine\util.lua" />
+  </ItemGroup>
+</Project>
