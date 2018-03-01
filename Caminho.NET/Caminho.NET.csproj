@@ -22,6 +22,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Engine\" />
+    <Folder Include="Loaders\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Engine\caminho.lua" />

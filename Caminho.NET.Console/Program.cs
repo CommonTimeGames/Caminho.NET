@@ -9,8 +9,9 @@ namespace Caminho
         {
             Console.WriteLine("Hello World!");
             var engine = new CaminhoEngine();
-            engine.Start("sample");
+            engine.Initialize();
 
+            engine.Start("test");
 
             Console.WriteLine(engine.Current.Text);
             Console.WriteLine("Press ENTER to continue...");

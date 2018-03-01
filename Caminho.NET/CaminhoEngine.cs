@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using Caminho.Loaders;
 using MoonSharp.Interpreter;
 using MoonSharp.Interpreter.Loaders;
 
@@ -18,25 +19,30 @@ namespace Caminho
         public bool CacheEnabled { get; set; }
         public bool AutoAdvance { get; set; }
 
+        public ICaminhoEngineLoader EngineLoader;
+        public ICaminhoDialogueLoader DialogueLoader;
+        public ICaminhoTextLoader TextLoader;
+
         private Script _scriptContext;
 
         public CaminhoEngine()
         {
-            var assembly = this.GetType().GetTypeInfo().Assembly;
-            var entryAssembly = Assembly.GetEntryAssembly();
+            DialogueLoader = new CaminhoFileSystemDialogueLoader();
+            EngineLoader = new CaminhoEmbeddedEngineLoader();
 
             _scriptContext = new Script();
             _scriptContext.Options.ScriptLoader =
-                              new CaminhoScriptLoader();
-
-            var names = assembly.GetManifestResourceNames();
-            var entryNames = entryAssembly.GetManifestResourceNames();
+                              new CaminhoScriptLoader(this);
 
             Context = new CaminhoContext(this);
             Current = new CaminhoNode(this);
+        }
 
+        public void Initialize()
+        {
             _scriptContext.DoString(BOOTSTRAP);
-
+            var engine = _scriptContext.Globals.Get("c");
+            engine.Table["loader"] = (Func<string, DynValue>)LoadDialogue;
         }
 
         public void Start(string name,
@@ -93,7 +99,10 @@ namespace Caminho
 
         private DynValue LoadDialogue(string name)
         {
-            return _scriptContext.DoStream(new FileStream(name, FileMode.Open));
+            var scriptStream = DialogueLoader.LoadDialogue(name);
+
+            return scriptStream != null ?
+                _scriptContext.LoadStream(scriptStream) : DynValue.Nil;
         }
 
         public string BOOTSTRAP
@@ -258,35 +267,24 @@ namespace Caminho
 
         public class CaminhoScriptLoader : ScriptLoaderBase
         {
-            private Assembly _assembly;
-            private string[] _resourceNames;
+            private CaminhoEngine _engine;
 
-            public CaminhoScriptLoader()
+            public CaminhoScriptLoader(CaminhoEngine engine)
             {
-                _assembly = typeof(CaminhoEngine).GetTypeInfo().Assembly;
-                _resourceNames = _assembly.GetManifestResourceNames();
+                _engine = engine;
                 ModulePaths = new string[] { "?", "?.lua" };
             }
 
             public override object LoadFile(string file, Table globalContext)
             {
-                if (file.Contains("./") || file.Contains(".\\"))
-                {
-                    file = file.Substring(2);
-                }
-
-                Console.WriteLine("LoadFile({0})", file);
-                var result = _resourceNames.First(x => x.Contains(file));
-                return _assembly.GetManifestResourceStream(result);
+                return _engine.EngineLoader.LoadFile(file);
             }
 
             public override bool ScriptFileExists(string name)
             {
-                Console.WriteLine("ScriptFileExists({0})", name);
-                return _resourceNames.Any(x => x.Contains(name));
+                return _engine.EngineLoader.Exists(name);
             }
         }
-
     }
 
     public enum CaminhoStatus
