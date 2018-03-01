@@ -5,11 +5,11 @@ using System.Runtime.CompilerServices;
 // Change them to the values specific to your project.
 
 [assembly: AssemblyTitle("Caminho.NET.Console")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Console utility for the Caminho.NET Engine")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Common Time Games")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCopyright("2018 Common Time Games")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

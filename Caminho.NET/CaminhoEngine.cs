@@ -24,8 +24,35 @@ namespace Caminho
         public CaminhoContext Context { get; private set; }
         public CaminhoNode Current { get; private set; }
 
-        public bool CacheEnabled { get; set; }
-        public bool AutoAdvance { get; set; }
+        public bool CacheEnabled
+        {
+            get
+            {
+                var engine = _scriptContext.Globals.Get("c");
+                var cacheEnabled = engine.Table.Get("cacheEnabled");
+                return cacheEnabled.Boolean;
+            }
+            set
+            {
+                var engine = _scriptContext.Globals.Get("c");
+                engine.Table["cacheEnabled"] = value;
+            }
+        }
+
+        public bool AutoAdvance
+        {
+            get
+            {
+                var engine = _scriptContext.Globals.Get("c");
+                var cacheEnabled = engine.Table.Get("autoAdvance");
+                return cacheEnabled.Boolean;
+            }
+            set
+            {
+                var engine = _scriptContext.Globals.Get("c");
+                engine.Table["autoAdvance"] = value;
+            }
+        }
 
         public ICaminhoEngineLoader EngineLoader;
         public ICaminhoDialogueLoader DialogueLoader;
@@ -124,6 +151,24 @@ namespace Caminho
             internal CaminhoContext(CaminhoEngine engine)
             {
                 _engine = engine;
+            }
+
+            public object this[object key]
+            {
+                get
+                {
+                    var engine = _engine._scriptContext.Globals.Get("c");
+                    var context = engine.Table.Get("context");
+                    return context.Table.Get(key).ToObject();
+                }
+                set
+                {
+                    var engine = _engine._scriptContext.Globals.Get("c");
+                    var context = engine.Table.Get("context");
+                    context.Table.Set(key,
+                                      DynValue.FromObject(_engine._scriptContext,
+                                                          value));
+                }
             }
         }
 
