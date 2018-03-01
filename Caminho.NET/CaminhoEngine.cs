@@ -11,7 +11,15 @@ namespace Caminho
 {
     public class CaminhoEngine
     {
-        public CaminhoStatus Status { get; private set; }
+        public CaminhoStatus Status
+        {
+            get
+            {
+                var engine = _scriptContext.Globals.Get("c");
+                var status = engine.Table.Get("status");
+                return FromString(status.String);
+            }
+        }
 
         public CaminhoContext Context { get; private set; }
         public CaminhoNode Current { get; private set; }
@@ -155,8 +163,12 @@ namespace Caminho
                 ClearCurrent();
 
                 var c = _engine._scriptContext.Globals.Get("c");
+
                 var current = c.Table.Get("current");
+                if (current.IsNil()) { return; }
+
                 var node = current.Table.Get("node");
+                if (node == null) { return; }
 
                 Type = FromString(node.Table.MetaTable.Get("type"));
 
@@ -265,27 +277,25 @@ namespace Caminho
             }
         }
 
-        public class CaminhoScriptLoader : ScriptLoaderBase
+        private static CaminhoStatus FromString(string val)
         {
-            private CaminhoEngine _engine;
 
-            public CaminhoScriptLoader(CaminhoEngine engine)
+            if (val == "inactive")
             {
-                _engine = engine;
-                ModulePaths = new string[] { "?", "?.lua" };
+                return CaminhoStatus.Inactive;
             }
-
-            public override object LoadFile(string file, Table globalContext)
+            else if (val == "active")
             {
-                return _engine.EngineLoader.LoadFile(file);
+                return CaminhoStatus.Active;
             }
-
-            public override bool ScriptFileExists(string name)
+            else
             {
-                return _engine.EngineLoader.Exists(name);
+                return CaminhoStatus.Error;
             }
         }
     }
+
+
 
     public enum CaminhoStatus
     {

@@ -13,6 +13,8 @@ namespace Caminho
 
             engine.Start("test");
 
+            Console.WriteLine("Status: {0}", engine.Status);
+
             Console.WriteLine(engine.Current.Text);
             Console.WriteLine("Press ENTER to continue...");
             Console.ReadLine();
@@ -22,6 +24,17 @@ namespace Caminho
             Console.WriteLine(engine.Current.Text);
             Console.WriteLine("Press ENTER to continue...");
             Console.ReadLine();
+
+            engine.Continue();
+
+            Console.WriteLine(engine.Current.Text);
+            Console.WriteLine("Press ENTER to continue...");
+            Console.ReadLine();
+
+            engine.Continue();
+
+            Console.WriteLine("Status: {0}", engine.Status);
+
         }
     }
 }
