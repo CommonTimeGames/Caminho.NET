@@ -62,8 +62,13 @@ namespace Caminho
 
         public CaminhoEngine()
         {
+#if UNITY_5_3_OR_NEWER
+            DialogueLoader = new CaminhoUnityDialogueLoader();
+            EngineLoader = new CaminhoUnityEngineLoader();
+#else
             DialogueLoader = new CaminhoFileSystemDialogueLoader();
             EngineLoader = new CaminhoEmbeddedEngineLoader();
+#endif
 
             _scriptContext = new Script();
             _scriptContext.Options.ScriptLoader =
@@ -88,12 +93,12 @@ namespace Caminho
 
             arg["name"] = name;
 
-            if (!string.IsNullOrWhiteSpace(package))
+            if (!string.IsNullOrEmpty(package))
             {
                 arg["package"] = package;
             }
 
-            if (!string.IsNullOrWhiteSpace(startNode))
+            if (!string.IsNullOrEmpty(startNode))
             {
                 arg["start"] = startNode;
             }
@@ -230,6 +235,9 @@ namespace Caminho
                     case CaminhoNodeType.Choice:
                         var cText = node.Table.Get("text");
                         var cKey = node.Table.Get("key");
+                        this.Text = cText.IsNotNil() ? cText.String : null;
+                        this.TextKey = cKey.IsNotNil() ? cKey.String : null;
+
                         var choices = node.Table.Get("choices");
 
                         if (choices != null

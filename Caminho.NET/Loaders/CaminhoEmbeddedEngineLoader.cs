@@ -13,7 +13,11 @@ namespace Caminho.Loaders
 
         public CaminhoEmbeddedEngineLoader()
         {
+#if UNITY_5_3_OR_NEWER
+            _assembly = typeof(CaminhoEngine).Assembly;
+#else
             _assembly = typeof(CaminhoEngine).GetTypeInfo().Assembly;
+#endif
             _resourceNames = _assembly.GetManifestResourceNames();
         }
 
