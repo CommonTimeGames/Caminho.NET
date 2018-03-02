@@ -180,11 +180,12 @@ namespace Caminho
             public string Package { get; private set; }
 
             public CaminhoNodeType Type { get; private set; }
-
             public string Next { get; private set; }
 
             public string Text { get; private set; }
             public string TextKey { get; private set; }
+
+            public CaminhoChoice[] Choices { get; private set; }
 
             public string Event { get; private set; }
             public Dictionary<object, object> EventData { get; private set; }
@@ -220,12 +221,51 @@ namespace Caminho
                 switch (Type)
                 {
                     case CaminhoNodeType.Text:
-                    case CaminhoNodeType.Choice:
                         var text = node.Table.Get("text");
                         var key = node.Table.Get("key");
                         this.Text = text.IsNotNil() ? text.String : null;
                         this.TextKey = key.IsNotNil() ? key.String : null;
                         break;
+
+                    case CaminhoNodeType.Choice:
+                        var cText = node.Table.Get("text");
+                        var cKey = node.Table.Get("key");
+                        var choices = node.Table.Get("choices");
+
+                        if (choices != null
+                           && choices.IsNotNil()
+                           && choices.Type == DataType.Table)
+                        {
+                            var choiceLength = choices.Table.Length;
+                            this.Choices = new CaminhoChoice[choiceLength];
+
+                            for (int i = 1; i <= choiceLength; i++)
+                            {
+                                var cc = new CaminhoChoice();
+
+                                var choice = choices.Table.Get(i);
+
+                                var choiceText = choice.Table.Get("text");
+                                var choiceKey = choice.Table.Get("key");
+
+                                if (choiceText.IsNotNil()
+                                   && choiceText.Type == DataType.String)
+                                {
+                                    cc.Text = choiceText.String;
+                                }
+
+                                if (choiceKey.IsNotNil()
+                                   && choiceKey.Type == DataType.String)
+                                {
+                                    cc.Key = choiceText.String;
+                                }
+
+                                this.Choices[i - 1] = cc;
+                            }
+                        }
+
+                        break;
+
 
                     case CaminhoNodeType.Wait:
                         var wait = node.Table.Get("wait");
@@ -340,7 +380,11 @@ namespace Caminho
         }
     }
 
-
+    public struct CaminhoChoice
+    {
+        public string Text { get; set; }
+        public string Key { get; set; }
+    }
 
     public enum CaminhoStatus
     {

@@ -52,6 +52,13 @@ namespace Caminho
                     case CaminhoNodeType.Choice:
                         Console.WriteLine("[Choice] {0}", engine.Current.Text);
                         enterToContinue = true;
+
+                        for (int i = 0; i < engine.Current.Choices.Length; i++)
+                        {
+                            var c = engine.Current.Choices[i];
+                            Console.WriteLine("{0}) {1}", i + 1, c.Text);
+                        }
+
                         break;
 
                     case CaminhoNodeType.Function:
