@@ -22,7 +22,7 @@ namespace Caminho.NET.Tests
             Engine = null;
         }
 
-        [Test()]
+        [Test]
         public void TestBasic()
         {
             Engine.Start("Data/basic");
@@ -33,6 +33,32 @@ namespace Caminho.NET.Tests
 
             Engine.Continue();
             Assert.AreEqual(Engine.Current.Text, "Third");
+        }
+
+        [Test()]
+        public void TestStatus()
+        {
+            Engine.Start("Data/basic.lua");
+            Assert.AreEqual(Engine.Status, CaminhoStatus.Active);
+
+            Engine.Continue();
+            Engine.Continue();
+            Engine.Continue();
+
+            Assert.AreEqual(Engine.Status, CaminhoStatus.Inactive);
+        }
+
+        [Test()]
+        public void TestPackage()
+        {
+            Engine.Start("Data/basic.lua", "second");
+            Assert.AreEqual(Engine.Current.Text, "Second:First");
+
+            Engine.Continue();
+            Assert.AreEqual(Engine.Current.Text, "Second:Second");
+
+            Engine.Continue();
+            Assert.AreEqual(Engine.Current.Text, "Second:Third");
         }
     }
 }
