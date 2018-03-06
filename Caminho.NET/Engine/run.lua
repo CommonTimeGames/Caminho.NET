@@ -9,6 +9,7 @@ dlg = arg[1]
 pkg = arg[2] or "default"
 
 c = Caminho:new()
+c.autoAdvance = false
 c:Start{name=dlg, package=pkg}
 
 print("Loaded dialog '" .. arg[1] .. "', package '" .. pkg .. "'")

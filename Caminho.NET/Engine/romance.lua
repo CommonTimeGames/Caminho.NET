@@ -27,6 +27,7 @@ local data =
     getIntroText=function(d)
       local feelingText = ""
       local feeling = d.context.feeling or 0
+      print("Feeling: " .. tostring(feeling))
 
       if feeling > 2 then
         feelingText = positiveText
@@ -40,13 +41,13 @@ local data =
 
     end,
 
-    giveFlower=function(d)
+    giveFlower_func=function(d)
       d.context.feeling = d.context.feeling or 0
       d.context.feeling = math.min(d.context.feeling + 1, maxFeeling)
       return "intro"
     end,
 
-    giveFrog=function(d)
+    giveFrog_func=function(d)
       d.context.feeling = d.context.feeling or 0
       d.context.feeling = math.max(d.context.feeling - 1, minFeeling)
       return "intro"

@@ -139,10 +139,11 @@ namespace Caminho
 
         private DynValue LoadDialogue(string name)
         {
-            var scriptStream = DialogueLoader.LoadDialogue(name);
-
-            return scriptStream != null ?
-                _scriptContext.LoadStream(scriptStream) : DynValue.Nil;
+            using (var scriptStream = DialogueLoader.LoadDialogue(name))
+            {
+                return scriptStream != null ?
+                    _scriptContext.LoadStream(scriptStream) : DynValue.Nil;
+            }
         }
 
         public string BOOTSTRAP
@@ -187,6 +188,7 @@ namespace Caminho
             public CaminhoNodeType Type { get; private set; }
             public string Next { get; private set; }
 
+            public string DisplayText { get; private set; }
             public string Text { get; private set; }
             public string TextKey { get; private set; }
 
@@ -228,15 +230,23 @@ namespace Caminho
                     case CaminhoNodeType.Text:
                         var text = node.Table.Get("text");
                         var key = node.Table.Get("key");
+                        var displayText = node.Table.Get("displayText");
                         this.Text = text.IsNotNil() ? text.String : null;
                         this.TextKey = key.IsNotNil() ? key.String : null;
+                        this.DisplayText = displayText.IsNotNil() ?
+                            displayText.String : null;
+
                         break;
 
                     case CaminhoNodeType.Choice:
                         var cText = node.Table.Get("text");
                         var cKey = node.Table.Get("key");
+                        var cDisplayText = node.Table.Get("displayText");
                         this.Text = cText.IsNotNil() ? cText.String : null;
                         this.TextKey = cKey.IsNotNil() ? cKey.String : null;
+                        this.DisplayText = cDisplayText.IsNotNil() ?
+                            cDisplayText.String : null;
+
 
                         var choices = node.Table.Get("choices");
 
