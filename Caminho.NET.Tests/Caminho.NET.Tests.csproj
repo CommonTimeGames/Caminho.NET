@@ -34,7 +34,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BasicTests.cs" />
+    <Compile Include="CaminhoTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
